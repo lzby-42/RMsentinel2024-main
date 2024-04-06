@@ -1,0 +1,12 @@
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
+remoter_can\port.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+remoter_can\port.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+remoter_can\port.o: ../Core/Inc/FreeRTOSConfig.h
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+remoter_can\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
