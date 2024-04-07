@@ -107,20 +107,20 @@ void saveControl_Task(void const *argument)
         //射击限制判定
         if (count == 5)
         {
-            if (get_17Heat_1_Now() + 2 * robot_status.shooter_barrel_cooling_value > get_17Heat_Limit())
+            if (get_17Heat_1_Now() + 1 * robot_status.shooter_barrel_cooling_value > 400)
             {
-                shoot_flag_1 == 0;
+                shoot_flag_1 = 0;
             }
-            else if (get_17Heat_1_Now() + 10 * robot_status.shooter_barrel_cooling_value < get_17Heat_Limit())
+            else if (get_17Heat_1_Now() + 4 * robot_status.shooter_barrel_cooling_value < 400)
             {
                 shoot_flag_1 = 1;
             }
 
-            if (get_17Heat_2_Now() + 2 * robot_status.shooter_barrel_cooling_value > get_17Heat_Limit())
+            if (get_17Heat_2_Now() + 1 * robot_status.shooter_barrel_cooling_value > 400)
             {
-                shoot_flag_2 == 0;
+                shoot_flag_2 = 0;
             }
-            else if (get_17Heat_2_Now() + 10 * robot_status.shooter_barrel_cooling_value < get_17Heat_Limit())
+            else if (get_17Heat_2_Now() + 4 * robot_status.shooter_barrel_cooling_value < 400)
             {
                 shoot_flag_2 = 1;
             }

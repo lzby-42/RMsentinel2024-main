@@ -54,8 +54,8 @@ void Moto_Shoot1_Task(void const *argument)
     uint8_t i = 0;
     while (1)
     {
-        if ((val_2[4 + 8].rotor_speed < -3800 &&
-            val_2[3 + 8].rotor_speed > 3800 &&
+        if ((val_2[4 + 8].rotor_speed < -6800 &&
+            val_2[3 + 8].rotor_speed > 6800 &&
             (shoot_flag == 1 || (shoot_flag_1 ==1 && visioning_flag_shoot == 1))) ||
             text1)
         {
@@ -114,8 +114,8 @@ void Moto_Shoot2_Task(void const *argument)
 
     while (1)
     {
-        if ((val_2[1 + 8].rotor_speed < -3800 &&
-            val_2[2 + 8].rotor_speed > 3800 &&
+        if ((val_2[1 + 8].rotor_speed < -6800 &&
+            val_2[2 + 8].rotor_speed > 6800 &&
             (shoot_flag == 1 || (shoot_flag_2 == 1 && visioning_flag_shoot == 1))) ||
             text1)
         {

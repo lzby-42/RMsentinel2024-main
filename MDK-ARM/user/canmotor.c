@@ -1,5 +1,5 @@
 /*
-can≈‰÷√ø…“‘“∆÷≤
+canÈÖçÁΩÆÂèØ‰ª•ÁßªÊ§ç
 
 
 
@@ -12,9 +12,9 @@ can≈‰÷√ø…“‘“∆÷≤
 #include "string.h"
 #include "tool.h"
 
-uint8_t Data_Enable[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC };		//¥Ô√ÓµÁª˙ πƒ‹√¸¡Ó
-uint8_t Data_Failure[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFD };		//µÁª˙ ßƒ‹√¸¡Ó
-uint8_t Data_Save_zero[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE };	    //µÁª˙±£¥Ê¡„µ„√¸¡Ó
+uint8_t Data_Enable[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC };		//ËææÂ¶ôÁîµÊú∫‰ΩøËÉΩÂëΩ‰ª§
+uint8_t Data_Failure[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFD };		//ÁîµÊú∫Â§±ËÉΩÂëΩ‰ª§
+uint8_t Data_Save_zero[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE };	    //ÁîµÊú∫‰øùÂ≠òÈõ∂ÁÇπÂëΩ‰ª§
 
 moto_info_t val_1[16];
 moto_info_t val_2[16];
@@ -26,7 +26,7 @@ int motorval1, motorval2, motorval3, motorval4, motorvalleft = 3, motorvalright;
 int16_t can_error = 0, can_ok = 0, can_error1 = 0;
 uint8_t can5FIFO_flag = 1;
 uint8_t canCFIFO_flag = 1;
-void can_filter_init(void)									//π˝¬À∆˜≈‰÷√
+void can_filter_init(void)									//ËøáÊª§Âô®ÈÖçÁΩÆ
 {
   CAN_FilterTypeDef can_filter_st;
   can_filter_st.FilterActivation = ENABLE;
@@ -38,11 +38,12 @@ void can_filter_init(void)									//π˝¬À∆˜≈‰÷√
   can_filter_st.FilterMaskIdLow = 0x0000;
   can_filter_st.FilterBank = 0;
   can_filter_st.FilterFIFOAssignment = CAN_RX_FIFO0;
+  can_filter_st.SlaveStartFilterBank = 0;
   HAL_CAN_ConfigFilter(&hcan1, &can_filter_st);
   HAL_CAN_Start(&hcan1);
   HAL_CAN_IRQHandler(&hcan1);
 }
-void can2_filter_init(void)									//π˝¬À∆˜≈‰÷√
+void can2_filter_init(void)									//ËøáÊª§Âô®ÈÖçÁΩÆ
 {
   CAN_FilterTypeDef can_filter_st;
   can_filter_st.FilterActivation = ENABLE;
@@ -54,6 +55,7 @@ void can2_filter_init(void)									//π˝¬À∆˜≈‰÷√
   can_filter_st.FilterMaskIdLow = 0x0000;
   can_filter_st.FilterBank = 14;
   can_filter_st.FilterFIFOAssignment = CAN_RX_FIFO0;
+  can_filter_st.SlaveStartFilterBank = 0;
   HAL_CAN_ConfigFilter(&hcan2, &can_filter_st);
   HAL_CAN_Start(&hcan2);
   HAL_CAN_IRQHandler(&hcan2);
@@ -61,12 +63,12 @@ void can2_filter_init(void)									//π˝¬À∆˜≈‰÷√
 
 void can_output(int16_t v1, int16_t v2, int16_t v3, int16_t v4)
 {
-  CAN_TxHeaderTypeDef CAN1_TxHander;                      //∑¢ÀÕµƒΩ·ππÃÂ
-  uint8_t TxDate[8] = { 0 };   							    //∑≈ ˝÷µµƒ ˝◊È
-  CAN1_TxHander.DLC = 0x08;									//∑¢ÀÕµƒŒª ˝
-  CAN1_TxHander.IDE = CAN_ID_STD;							//±Í◊ºŒª
-  CAN1_TxHander.RTR = CAN_RTR_DATA;							//Õÿ’πŒª
-  CAN1_TxHander.StdId = 0x200;								//∑¢ÀÕµƒµÿ÷∑
+  CAN_TxHeaderTypeDef CAN1_TxHander;                      //ÂèëÈÄÅÁöÑÁªìÊûÑ‰Ωì
+  uint8_t TxDate[8] = { 0 };   							    //ÊîæÊï∞ÂÄºÁöÑÊï∞ÁªÑ
+  CAN1_TxHander.DLC = 0x08;									//ÂèëÈÄÅÁöÑ‰ΩçÊï∞
+  CAN1_TxHander.IDE = CAN_ID_STD;							//Ê†áÂáÜ‰Ωç
+  CAN1_TxHander.RTR = CAN_RTR_DATA;							//ÊãìÂ±ï‰Ωç
+  CAN1_TxHander.StdId = 0x200;								//ÂèëÈÄÅÁöÑÂú∞ÂùÄ
   TxDate[0] = v1 >> 8;
   TxDate[1] = v1;
   TxDate[2] = v2 >> 8;
@@ -74,19 +76,19 @@ void can_output(int16_t v1, int16_t v2, int16_t v3, int16_t v4)
   TxDate[4] = v3 >> 8;
   TxDate[5] = v3;
   TxDate[6] = v4 >> 8;
-  TxDate[7] = v4;											//1µΩ4µƒµÁª˙µƒ÷µ
-  HAL_CAN_AddTxMessage(&hcan1, &CAN1_TxHander, TxDate, 0);	//∑¢ÀÕ ˝æ›∫Ø ˝	
+  TxDate[7] = v4;											//1Âà∞4ÁöÑÁîµÊú∫ÁöÑÂÄº
+  HAL_CAN_AddTxMessage(&hcan1, &CAN1_TxHander, TxDate, 0);	//ÂèëÈÄÅÊï∞ÊçÆÂáΩÊï∞	
 }
 
 
 void can_output_gimbal(int16_t v1, int16_t v2, int16_t v3, int16_t v4) //3,4m2006
 {
-  CAN_TxHeaderTypeDef CAN1_TxHander;                      //∑¢ÀÕµƒΩ·ππÃÂ
-  uint8_t TxDate[8] = { 0 };   							    //∑≈ ˝÷µµƒ ˝◊È
-  CAN1_TxHander.DLC = 0x08;									//∑¢ÀÕµƒŒª ˝
-  CAN1_TxHander.IDE = CAN_ID_STD;							//±Í◊ºŒª
-  CAN1_TxHander.RTR = CAN_RTR_DATA;							//Õÿ’πŒª
-  CAN1_TxHander.StdId = 0x1ff;								//∑¢ÀÕµƒµÿ÷∑
+  CAN_TxHeaderTypeDef CAN1_TxHander;                      //ÂèëÈÄÅÁöÑÁªìÊûÑ‰Ωì
+  uint8_t TxDate[8] = { 0 };   							    //ÊîæÊï∞ÂÄºÁöÑÊï∞ÁªÑ
+  CAN1_TxHander.DLC = 0x08;									//ÂèëÈÄÅÁöÑ‰ΩçÊï∞
+  CAN1_TxHander.IDE = CAN_ID_STD;							//Ê†áÂáÜ‰Ωç
+  CAN1_TxHander.RTR = CAN_RTR_DATA;							//ÊãìÂ±ï‰Ωç
+  CAN1_TxHander.StdId = 0x1ff;								//ÂèëÈÄÅÁöÑÂú∞ÂùÄ
   TxDate[0] = v1 >> 8;
   TxDate[1] = v1;
   TxDate[2] = v2 >> 8;
@@ -94,9 +96,9 @@ void can_output_gimbal(int16_t v1, int16_t v2, int16_t v3, int16_t v4) //3,4m200
   TxDate[4] = v3 >> 8;
   TxDate[5] = v3;
   TxDate[6] = v4 >> 8;
-  TxDate[7] = v4;											//1µΩ4µƒµÁª˙µƒ÷µ
+  TxDate[7] = v4;											//1Âà∞4ÁöÑÁîµÊú∫ÁöÑÂÄº
 
-  if (HAL_CAN_AddTxMessage(&hcan1, &CAN1_TxHander, TxDate, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //∑¢ÀÕ ˝æ›∫Ø ˝	
+  if (HAL_CAN_AddTxMessage(&hcan1, &CAN1_TxHander, TxDate, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //ÂèëÈÄÅÊï∞ÊçÆÂáΩÊï∞	
   {
     if (HAL_CAN_AddTxMessage(&hcan1, &CAN1_TxHander, TxDate, (uint32_t *)CAN_TX_MAILBOX1) != HAL_OK)
     {
@@ -108,16 +110,16 @@ void can_output_gimbal(int16_t v1, int16_t v2, int16_t v3, int16_t v4) //3,4m200
 
 
 /**
- * @brief  ¥Ô√ÓµÁª˙Œª÷√ÀŸ∂»ƒ£ Ωøÿœ¬øÿ÷∆÷°
- * @param  hcan   CANµƒæ‰±˙
- * @param  ID      ˝æ›÷°µƒID
- * @param  _pos   Œª÷√∏¯∂®
- * @param  _vel   ÀŸ∂»∏¯∂®
+ * @brief  ËææÂ¶ôÁîµÊú∫‰ΩçÁΩÆÈÄüÂ∫¶Ê®°ÂºèÊéß‰∏ãÊéßÂà∂Â∏ß
+ * @param  hcan   CANÁöÑÂè•ÊüÑ
+ * @param  ID     Êï∞ÊçÆÂ∏ßÁöÑID
+ * @param  _pos   ‰ΩçÁΩÆÁªôÂÆö
+ * @param  _vel   ÈÄüÂ∫¶ÁªôÂÆö
  */
 void PosSpeed_CtrlMotor(CAN_HandleTypeDef *hcan, uint16_t id, float _pos, float _vel)
 {
   static CAN_TxHeaderTypeDef Tx_Header;
-  uint8_t TxDate[8] = { 0 };   							    //∑≈ ˝÷µµƒ ˝◊È
+  uint8_t TxDate[8] = { 0 };   							    //ÊîæÊï∞ÂÄºÁöÑÊï∞ÁªÑ
   uint8_t *pbuf, *vbuf;
   pbuf = (uint8_t *)&_pos;
   vbuf = (uint8_t *)&_vel;
@@ -136,7 +138,7 @@ void PosSpeed_CtrlMotor(CAN_HandleTypeDef *hcan, uint16_t id, float _pos, float 
   TxDate[6] = *(vbuf + 2);
   TxDate[7] = *(vbuf + 3);
 
-  //’“µΩø’µƒ∑¢ÀÕ” œ‰£¨∞— ˝æ›∑¢ÀÕ≥ˆ»•
+  //ÊâæÂà∞Á©∫ÁöÑÂèëÈÄÅÈÇÆÁÆ±ÔºåÊääÊï∞ÊçÆÂèëÈÄÅÂá∫Âéª
   if (HAL_CAN_AddTxMessage(hcan, &Tx_Header, TxDate, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //
   {
     if (HAL_CAN_AddTxMessage(hcan, &Tx_Header, TxDate, (uint32_t *)CAN_TX_MAILBOX1) != HAL_OK)
@@ -147,15 +149,15 @@ void PosSpeed_CtrlMotor(CAN_HandleTypeDef *hcan, uint16_t id, float _pos, float 
 }
 
 /**
- * @brief  ÀŸ∂»ƒ£ Ωøÿœ¬øÿ÷∆÷°
- * @param  hcan   CANµƒæ‰±˙
- * @param  ID      ˝æ›÷°µƒID
- * @param  _vel   ÀŸ∂»∏¯∂®
+ * @brief  ÈÄüÂ∫¶Ê®°ÂºèÊéß‰∏ãÊéßÂà∂Â∏ß
+ * @param  hcan   CANÁöÑÂè•ÊüÑ
+ * @param  ID     Êï∞ÊçÆÂ∏ßÁöÑID
+ * @param  _vel   ÈÄüÂ∫¶ÁªôÂÆö
  */
 void Speed_CtrlMotor(CAN_HandleTypeDef *hcan, uint16_t ID, float _vel)
 {
   static CAN_TxHeaderTypeDef   Tx_Header;
-  uint8_t TxDate[8] = { 0 };   							    //∑≈ ˝÷µµƒ ˝◊È
+  uint8_t TxDate[8] = { 0 };   							    //ÊîæÊï∞ÂÄºÁöÑÊï∞ÁªÑ
   uint8_t *vbuf;
   vbuf = (uint8_t *)&_vel;
 
@@ -169,7 +171,7 @@ void Speed_CtrlMotor(CAN_HandleTypeDef *hcan, uint16_t ID, float _vel)
   TxDate[2] = *(vbuf + 2);
   TxDate[3] = *(vbuf + 3);
 
-  //’“µΩø’µƒ∑¢ÀÕ” œ‰£¨∞— ˝æ›∑¢ÀÕ≥ˆ»•
+  //ÊâæÂà∞Á©∫ÁöÑÂèëÈÄÅÈÇÆÁÆ±ÔºåÊääÊï∞ÊçÆÂèëÈÄÅÂá∫Âéª
   if (HAL_CAN_AddTxMessage(hcan, &Tx_Header, TxDate, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //
   {
     if (HAL_CAN_AddTxMessage(hcan, &Tx_Header, TxDate, (uint32_t *)CAN_TX_MAILBOX1) != HAL_OK)
@@ -199,7 +201,7 @@ void set_motor_voltage_can2_low(int16_t v1, int16_t v2, int16_t v3, int16_t v4)
   tx_data[5] = (v3);
   tx_data[6] = (v4 >> 8);
   tx_data[7] = (v4);
-  /*’“µΩø’µƒ∑¢ÀÕ” œ‰£¨∞— ˝æ›∑¢ÀÕ≥ˆ»•*/
+  /*ÊâæÂà∞Á©∫ÁöÑÂèëÈÄÅÈÇÆÁÆ±ÔºåÊääÊï∞ÊçÆÂèëÈÄÅÂá∫Âéª*/
   if (HAL_CAN_AddTxMessage(&hcan2, &tx_header, tx_data, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //
   {
     if (HAL_CAN_AddTxMessage(&hcan2, &tx_header, tx_data, (uint32_t *)CAN_TX_MAILBOX1) != HAL_OK)
@@ -229,7 +231,7 @@ void set_motor_voltage_can2_hig(int16_t v1, int16_t v2, int16_t v3, int16_t v4)
   tx_data[5] = (v3);
   tx_data[6] = (v4 >> 8);
   tx_data[7] = (v4);
-  /*’“µΩø’µƒ∑¢ÀÕ” œ‰£¨∞— ˝æ›∑¢ÀÕ≥ˆ»•*/
+  /*ÊâæÂà∞Á©∫ÁöÑÂèëÈÄÅÈÇÆÁÆ±ÔºåÊääÊï∞ÊçÆÂèëÈÄÅÂá∫Âéª*/
   if (HAL_CAN_AddTxMessage(&hcan2, &tx_header, tx_data, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //
   {
     if (HAL_CAN_AddTxMessage(&hcan2, &tx_header, tx_data, (uint32_t *)CAN_TX_MAILBOX1) != HAL_OK)
@@ -239,7 +241,7 @@ void set_motor_voltage_can2_hig(int16_t v1, int16_t v2, int16_t v3, int16_t v4)
   }
 }
 
-uint8_t CANx_SendStdData(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *pData, uint16_t Len)//◊‘∂®“Â–≈œ¢∑¢ÀÕ
+uint8_t CANx_SendStdData(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *pData, uint16_t Len)//Ëá™ÂÆö‰πâ‰ø°ÊÅØÂèëÈÄÅ
 {
   static CAN_TxHeaderTypeDef   Tx_Header;
 
@@ -250,7 +252,7 @@ uint8_t CANx_SendStdData(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *pData, u
   Tx_Header.DLC = Len;
 
 
-  /*’“µΩø’µƒ∑¢ÀÕ” œ‰£¨∞— ˝æ›∑¢ÀÕ≥ˆ»•*/
+  /*ÊâæÂà∞Á©∫ÁöÑÂèëÈÄÅÈÇÆÁÆ±ÔºåÊääÊï∞ÊçÆÂèëÈÄÅÂá∫Âéª*/
   if (HAL_CAN_AddTxMessage(hcan, &Tx_Header, pData, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //
   {
     if (HAL_CAN_AddTxMessage(hcan, &Tx_Header, pData, (uint32_t *)CAN_TX_MAILBOX1) != HAL_OK)
@@ -273,21 +275,21 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   if (hcan->Instance == CAN1)
   {
 
-    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data); //receive can data   Ω” ’can ˝æ›	
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data); //receive can data   Êé•Êî∂canÊï∞ÊçÆ	
     if (rx_header.StdId == 0x58)
     {
       val_1[7].rotor_angle = (rx_data[1] << 8) | rx_data[2];
       val_1[7].rotor_speed = (rx_data[3] << 4) | (rx_data[4] >> 4);
       val_1[7].torque_current = (rx_data[4] << 4) | rx_data[5];
-      val_1[7].temp = rx_data[6] > rx_data[7] ? rx_data[6] : rx_data[7];//»°∏ﬂŒ¬
+      val_1[7].temp = rx_data[6] > rx_data[7] ? rx_data[6] : rx_data[7];//ÂèñÈ´òÊ∏©
       can5FIFO_flag = 0;
     }
     if ((rx_header.StdId >= FEEDBACK_ID_BASE)
-      && (rx_header.StdId < FEEDBACK_ID_BASE + MOTOR_MAX_NUM))       // judge the can id   ≈–∂œcan±‡∫≈
+      && (rx_header.StdId < FEEDBACK_ID_BASE + MOTOR_MAX_NUM))       // judge the can id   Âà§Êñ≠canÁºñÂè∑
     {
 
       canCFIFO_flag = 0;
-      index = rx_header.StdId - FEEDBACK_ID_BASE;            // get motor index by can_id    Õ®π˝can_idªÒ»°‘À∂Ø÷∏±Í		
+      index = rx_header.StdId - FEEDBACK_ID_BASE;            // get motor index by can_id    ÈÄöËøácan_idËé∑ÂèñËøêÂä®ÊåáÊ†á		
       val_1[index].rotor_angle = ((rx_data[0] << 8) | rx_data[1]);
       val_1[index].rotor_speed = ((rx_data[2] << 8) | rx_data[3]);
       val_1[index].set_voltage = ((rx_data[4] << 8) | rx_data[5]);
@@ -303,12 +305,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   if (hcan->Instance == CAN2)
   {
 
-    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data1); //receive can data   Ω” ’can ˝æ›
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data1); //receive can data   Êé•Êî∂canÊï∞ÊçÆ
     if ((rx_header.StdId >= FEEDBACK_ID_BASE)
-      && (rx_header.StdId < FEEDBACK_ID_BASE + MOTOR_MAX_NUM))       // judge the can id   ≈–∂œcan±‡∫≈
+      && (rx_header.StdId < FEEDBACK_ID_BASE + MOTOR_MAX_NUM))       // judge the can id   Âà§Êñ≠canÁºñÂè∑
     {
 
-      index = rx_header.StdId - FEEDBACK_ID_BASE + 8;            // get motor index by can_id    Õ®π˝can_idªÒ»°‘À∂Ø÷∏±Í
+      index = rx_header.StdId - FEEDBACK_ID_BASE + 8;            // get motor index by can_id    ÈÄöËøácan_idËé∑ÂèñËøêÂä®ÊåáÊ†á
       idcs = index;
       val_1[index].rotor_angle = ((rx_data1[0] << 8) | rx_data1[1]);
       val_1[index].rotor_speed = ((rx_data1[2] << 8) | rx_data1[3]);

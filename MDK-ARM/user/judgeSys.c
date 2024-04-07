@@ -13,6 +13,9 @@ frame_header_t frame_header_rx;
 robot_status_t robot_status;
 power_heat_data_t power_heat_data;
 shoot_data_t shoot_data;
+hurt_data_t hurt_data;
+game_status_t game_status;
+game_robot_HP_t game_robot_HP;
 
 /**
  * @brief 裁判系统数据处理
@@ -37,16 +40,25 @@ void communication_Read_Data(uint8_t *data)
 					memcpy(&power_heat_data, &data[7 + i], frame_header_rx.data_length);
 					break;
 				
+				case 0x0206://判断id是不是0x0206(机器人受伤数据)
+					memcpy(&hurt_data, &data[7 + i], frame_header_rx.data_length);
+					break;
+					
 				case 0x0207://判断id是不是0x0203(机器人枪管数据)
 					memcpy(&shoot_data, &data[7 + i], frame_header_rx.data_length);
 					break;
 
+				case 0x0001://判断id是不是0x0001(游戏状态)
+					memcpy(&game_status, &data[7 + i], frame_header_rx.data_length);
+					break;
+				case 0x0003://判断id是不是0x0003(全局血量信号)
+					memcpy(&game_robot_HP, &data[7 + i], frame_header_rx.data_length);
 				default:
 					break;
 				}
 
 		}
-		i += data[i + 1];
+		i += frame_header_rx.data_length + 8;
 	}
 
 

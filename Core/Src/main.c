@@ -139,11 +139,11 @@ int main(void)
   dbus_uart_init();
 
 
-  can_filter_init();  //��������ʼ��
+  can_filter_init();  //
   can2_filter_init();
   HAL_CAN_RxFifo0MsgPendingCallback(&hcan1);
   HAL_CAN_RxFifo0MsgPendingCallback(&hcan2);
-  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);    //can�жϱ�����
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);    //
   HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING);
   HAL_UART_Receive_DMA(&huart6, Com4_Vision_Buffer, VISION_BUFFER_LENGTH);
   __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 600);
@@ -179,6 +179,7 @@ int main(void)
     communication_Read_Data(judgment_System_handle_buffer);
     HAL_Delay(1);
   }
+  can5FIFO_flag = 0;
   CANx_SendStdData(&hcan1, 0x206, Data_Enable, 8);
   HAL_Delay(1);
   i = 0;

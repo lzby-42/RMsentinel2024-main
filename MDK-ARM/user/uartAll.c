@@ -42,9 +42,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         memcpy(judgment_System_handle_buffer, judgment_System_Signal_Buffer, JUDGEMENT_SIZE);
 
 
-        judgment_Protect = 1;
+        // judgment_Protect = 1;
 
         memset(judgment_System_Signal_Buffer, 0, JUDGEMENT_SIZE);
+        communication_Read_Data(judgment_System_handle_buffer);
         HAL_UART_Receive_DMA(&huart8, judgment_System_Signal_Buffer, JUDGEMENT_SIZE);
     }
     else {

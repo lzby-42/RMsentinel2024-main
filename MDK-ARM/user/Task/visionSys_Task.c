@@ -48,29 +48,36 @@ void visionSys_Task(void const *argument)
             if (ReceivedPacketVision.tracking == true)
             {
                 pit_angle = 6150 - (b_set_angle * 8191 / PI / 2.0f);
-                yaw_angle = yaw2+PI;
-                // cacred = (SendPacketVision.yaw - ReceivedPacketVision.yaw);
-                // if (cacred > 2 * PI)
-                // {
-                //     cacred -= 2 * PI;
-                // }
-                // else if (cacred < -2 * PI)
-                // {
-                //     cacred += 2 * PI;
-                // }
-                // look_angle = (-imu.yaw) * (float)PI / 180.0f + cacred;
-                
-                // LimitMax(cacred, 0.15f);
-                // yaw_angle = (-imu.yaw + 180) * (float)PI / 180.0f - cacred;
+                yaw_angle = yaw2 + PI + 0.05f;
 
-            }else
+                if (__fabs(yaw_angle - yaw_angle_now) > 1.0f && visioning_flag == 1)
+                {
+                    visioning_flag_shoot == 1;
+                }
+                else
+                {
+                    visioning_flag_shoot == 0;
+                }
+
+            }
+            else
             {
-                pit_angle = 6150;
+                if (visioning_flag == 1)
+                {
+                    pit_angle = 6150;
+                }
+
+
 
             }
 
 
             HAL_UART_Receive_DMA(&huart6, Com4_newVision_Buffer, VISION_BUFFER_LEN);
+            if (time_count++ >= 10)
+            {
+                visioning_flag = 0;
+                time_count = 10;
+            }
 
 
 

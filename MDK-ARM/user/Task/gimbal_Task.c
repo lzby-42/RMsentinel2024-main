@@ -71,6 +71,7 @@ void gimbal_Task(void const *argument)
 
     // PID_Init(&yaw_angle_pid, -0.846175124586586, -0.000053321143253938, 0.0f, 50.6f, 50.6f);
     // PID_Init(&yaw_angle_pid, 5.965318035648911f, 0.001678159778040436f, 0.0f, 50.6f, 50.6f);
+    //4.405531514724122,0.000706429577441695,3.648934042743
     PID_Init(&yaw_angle_pid, 3.992492024750318f, 0.000583825399352108f, 5.613866249721f, 50.6f, 50.6f);
     PID_Init(&pit_angle_pid, 28.646833452546126f, 0.063105286115019380f, 189.959613004071f, 8000.0f, 8000.0f);
     // PID_Init(&pit_angle_pid, 50.0f, 0.0f, 1600.0f, 15000.0f, 15000.0f);
@@ -103,10 +104,10 @@ void gimbal_Task(void const *argument)
         }
         i++;
 
-        PID_Calc(&pid_Speed[0], val_2[1 + 8].rotor_speed, -5230, 0);//拨盘电机计算
-        PID_Calc(&pid_Speed[1], val_2[2 + 8].rotor_speed, 5230, 0);
-        PID_Calc(&pid_Speed[2], val_2[3 + 8].rotor_speed, 5230, 0);
-        PID_Calc(&pid_Speed[3], val_2[4 + 8].rotor_speed, -5230, 0);
+        PID_Calc(&pid_Speed[0], val_2[1 + 8].rotor_speed, -7230, 0);//拨盘电机计算
+        PID_Calc(&pid_Speed[1], val_2[2 + 8].rotor_speed, 7230, 0);
+        PID_Calc(&pid_Speed[2], val_2[3 + 8].rotor_speed, 7230, 0);
+        PID_Calc(&pid_Speed[3], val_2[4 + 8].rotor_speed, -7230, 0);
 
         set_motor_voltage_can2_low(pid_Speed[0].out, pid_Speed[1].out, pid_Speed[2].out, pid_Speed[3].out);//发送数据到can
 

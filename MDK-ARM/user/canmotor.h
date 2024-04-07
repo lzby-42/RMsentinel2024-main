@@ -28,6 +28,7 @@ typedef struct
 }moto_info_t;
 extern moto_info_t val_2[16];
 
+
 void can_output(int16_t v1, int16_t v2, int16_t v3, int16_t v4);
 void can_output_yuntaimotor(int16_t v1, int16_t v2, int16_t v3, int16_t v4);
 void can_output_gimbal(int16_t v1, int16_t v2, int16_t v3, int16_t v4);

@@ -121,9 +121,47 @@ typedef __packed struct
  float initial_speed;
 }shoot_data_t;
 
+typedef __packed struct
+{
+ uint8_t armor_id : 4;
+ uint8_t HP_deduction_reason : 4;
+}hurt_data_t;
+
+typedef __packed struct
+{
+ uint8_t game_type : 4;
+ uint8_t game_progress : 4;
+ uint16_t stage_remain_time;
+ uint64_t SyncTimeStamp;
+}game_status_t;
+
+typedef __packed struct
+{
+ uint16_t red_1_robot_HP;
+ uint16_t red_2_robot_HP;
+ uint16_t red_3_robot_HP;
+ uint16_t red_4_robot_HP;
+ uint16_t red_5_robot_HP;
+ uint16_t red_7_robot_HP;
+ uint16_t red_outpost_HP;
+ uint16_t red_base_HP;
+
+ uint16_t blue_1_robot_HP;
+ uint16_t blue_2_robot_HP;
+ uint16_t blue_3_robot_HP;
+ uint16_t blue_4_robot_HP;
+ uint16_t blue_5_robot_HP;
+ uint16_t blue_7_robot_HP;
+ uint16_t blue_outpost_HP;
+ uint16_t blue_base_HP;
+}game_robot_HP_t;
+
 extern robot_status_t robot_status;
 extern power_heat_data_t power_heat_data;
 extern shoot_data_t shoot_data;
+extern hurt_data_t hurt_data;
+extern game_status_t game_status;
+extern game_robot_HP_t game_robot_HP;
 
 #define CRC_Check_False   0
 #define CRC_Check_True    1

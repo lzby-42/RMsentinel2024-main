@@ -19,7 +19,7 @@ float Data_yaw, Data_pit;
 
 uint16_t time_count = 0;
 uint8_t visioning_flag = 0;
-uint8_t visioning_flag_shoot = 0;
+volatile uint8_t visioning_flag_shoot = 0;
 float last_yaw_angle = 0.0f;
 float last_pit_angle = 0.0f;
 

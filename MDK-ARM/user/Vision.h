@@ -5,7 +5,7 @@
 
 extern uint16_t time_count;
 extern uint8_t visioning_flag;
-extern uint8_t visioning_flag_shoot;
+extern volatile uint8_t visioning_flag_shoot;
 extern float Data_yaw, Data_pit;
 extern float last_yaw_angle, last_pit_angle;
 

@@ -122,7 +122,7 @@ void vision_new_version(void)
 
     st.k = KK;
     st.bullet_type = BULLET_17;
-    st.current_v = 10.0f;
+    st.current_v = 18.0f;
     st.current_pitch = 0;
     st.current_yaw = 0;
     st.xw = ReceivedPacketVision.x;

@@ -59,11 +59,10 @@ void judgeSys_Task(void const *argument)
     HAL_UART_Receive_DMA(&huart8, judgment_System_Signal_Buffer, JUDGEMENT_SIZE);
     while (1)
     {
-        if (judgment_Protect == 1)
-        {
+
             communication_Read_Data(judgment_System_handle_buffer);
             judgment_Protect = 0;
-        }
+        
 
         // if (i >= 10)
         // {
@@ -73,6 +72,6 @@ void judgeSys_Task(void const *argument)
         // }
         // i++;
 
-        vTaskDelayUntil(&xLastWakeTime, 10);
+        vTaskDelayUntil(&xLastWakeTime, 5);
     }
 }
