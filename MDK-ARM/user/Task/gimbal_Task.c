@@ -48,7 +48,7 @@ float average = 0;
 float yaw_angle = 0, pit_angle = 0;
 float yaw_angle_now, pit_angle_now;
 
-uint8_t shoot_flag = 0;
+uint8_t volatile shoot_flag = 0;
 // uint8_t Data_Enable[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC };		//达妙电机使能命令
 // uint8_t Data_Failure[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFD };		//电机失能命令
 // uint8_t Data_Save_zero[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE };	    //电机保存零点命令
@@ -72,7 +72,8 @@ void gimbal_Task(void const *argument)
     // PID_Init(&yaw_angle_pid, -0.846175124586586, -0.000053321143253938, 0.0f, 50.6f, 50.6f);
     // PID_Init(&yaw_angle_pid, 5.965318035648911f, 0.001678159778040436f, 0.0f, 50.6f, 50.6f);
     //4.405531514724122,0.000706429577441695,3.648934042743
-    PID_Init(&yaw_angle_pid, 3.992492024750318f, 0.000583825399352108f, 5.613866249721f, 50.6f, 50.6f);
+    // PID_Init(&yaw_angle_pid, 3.992492024750318f, 0.000583825399352108f, 5.613866249721f, 50.6f, 50.6f);
+    PID_Init(&yaw_angle_pid, 4.290100060787979f, 0.000908624602309391, 0.0f, 50.6f, 50.6f);
     PID_Init(&pit_angle_pid, 28.646833452546126f, 0.063105286115019380f, 189.959613004071f, 8000.0f, 8000.0f);
     // PID_Init(&pit_angle_pid, 50.0f, 0.0f, 1600.0f, 15000.0f, 15000.0f);
     //2.175531364736235e+04,2.080365033389496e+03
@@ -153,7 +154,7 @@ void gimbal_Task(void const *argument)
         // // //
         // // //
         // sprintf(strff, "%f,%f\r\n",yaw_angle,yaw_angle_now);
-        // sprintf(strff, "%f,%f\r\n",count,yaw_angle_now);
+        // sprintf(strff, "%f,%f\r\n", count, yaw_angle_now);
         // HAL_UART_Transmit_DMA(&huart7, (uint8_t *)&strff, strlen(strff));//发送数据
         // huart7.gState = HAL_UART_STATE_READY;
 
@@ -164,17 +165,18 @@ void gimbal_Task(void const *argument)
         {
             pit_angle = 5800;
         }
-        else if (pit_angle > 6700)
+        else if (pit_angle > 6600)
         {
-            pit_angle = 6700;  //限制pit_angle范围，防止超出电机转角范围。
+            pit_angle = 6600;  //限制pit_angle范围，防止超出电机转角范围。
         }
         PID_Calc(&pit_angle_pid, pit_angle_now, pit_angle, 0);//pit_angle_pid计算
 
         can_output_gimbal(pit_angle_pid.out - 7800, 0, 0, 0);
         //can_output_gimbal(-5500, 0, 0, 0);
-        // can_output_gimbal(count- 9100, 0, 0, 0);
+        // can_output_gimbal(count- 7800, 0, 0, 0);
         // sprintf(strff, "%f,%f\r\n", count, pit_angle_now);
         // HAL_UART_Transmit_DMA(&huart7, (uint8_t *)&strff, strlen(strff));//发送数据
+        // huart7.gState = HAL_UART_STATE_READY;
 
         if (bolun < 1024)
         {

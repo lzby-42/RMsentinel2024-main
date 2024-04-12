@@ -54,29 +54,40 @@ float errorwucha2;
 void pid_chassis(float kp, float ki, float kd, float setmv4, float setmv3)	//float setmv4（y轴值）,float setmv3（x轴值）
 {
 	static float wSpeed = 0;
-
+	static uint8_t t = 0;
 	seita = (((val_2[7].rotor_angle) % 16471) / 2621.4411123) + Pi / 2;//计算yaw_angle
 	xcos = cos(-seita);
 	ysin = sin(-seita);
-	setx = (-setmv3 * xcos) - (setmv4 * ysin);
-	sety = (-setmv3 * ysin) + (setmv4 * xcos);
+	setx = (-setmv3 * xcos) - (-setmv4 * ysin);
+	sety = (-setmv3 * ysin) + (-setmv4 * xcos);
 
 
 	// setmv1 = (abs(motorval1) > 100 ? motorval1 : 0) / 3.30f;
 	if (motorvalleft == 1)
 	{
-		wSpeed += 0.03f;
+		wSpeed += 0.1f;
 		LimitMax(wSpeed, 240);
 	}
 	if (motorvalleft == 2)
 	{
-		wSpeed -= 0.03f;
+		wSpeed -= 0.25f;
 		if (wSpeed < 0)
 		{
 			wSpeed = 0;
 		}
 
 	}
+	if (motorvalleft == 3)
+	{
+		wSpeed += 0.1 * sin(0.05 * t++);
+		LimitMax(wSpeed, 180);
+	}
+	if (0.05 * t >= 4 * Pi)
+	{
+		t = 0;
+	}
+
+
 
 
 	setmv1 = wSpeed;//60->90°/s
@@ -180,7 +191,7 @@ int pid_Shoot1(int sdbspeed, float kp, float ki, float kd)
 {
 	// int limitwc = 180;
 
-	int limit = 6500;
+	int limit = 7000;
 	int jifenlimit = 1600;
 	speedcs = val_2[5 + 8].rotor_speed / 8;
 
@@ -202,7 +213,7 @@ int pid_Shoot2(int sdbspeed, float kp, float ki, float kd)
 {
 	// int limitwc = 180;
 
-	int limit = 6500;
+	int limit = 7000;
 	int jifenlimit = 1000;
 	speedcs = val_2[6 + 8].rotor_speed / 8;//我也不知道为什么是8，但是4就会振的很厉害，后辈有时间你们可以试试其他数
 

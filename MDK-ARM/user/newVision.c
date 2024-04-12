@@ -65,7 +65,11 @@ union X16ToFl
 
 VisionSendHeader_t    VisionSendHeader;  //头
 VisionRecvData_t      VisionRecvData;    //视觉接收结构体
-VisionSendData_t      VisionSendData;   //视觉接收结构体
+VisionSendData_t      VisionSendData;   //视觉发送结构体
+SendPacketAllRobotHP_s SendPacketAllRobotHP;//全体血量
+SendPacketGameStatus_s SendPacketGameStatus;//游戏状态
+SendPacketRobotStatus_s SendPacketRobotStatus;//机器人状态
+ReceivedPacketTwist_s ReceivedPacketTwist;//机器人目标状态
 
 ReceivedPacketVision_s ReceivedPacketVision;
 struct SolveTrajectoryParams st;
@@ -106,15 +110,24 @@ float yaw2 = 0;   //yaw
 float fan;
 uint8_t vision_check = 0;
 float s = 0;
-
+float cacre = 0;
 void vision_new_version(void)
 {
     for (uint8_t i = 0; i < VISION_BUFFER_LEN - sizeof(ReceivedPacketVision_s) + 1; i++)
     {
         if (newVision_Buffer[i] == 0xA5 && Verify_CRC16_Check_Sum(&newVision_Buffer[i], 48))
         {
-            memcpy(&ReceivedPacketVision, &newVision_Buffer[i], sizeof(ReceivedPacketVision_s));
-            vision_check = 1;
+            if (Verify_CRC16_Check_Sum(&newVision_Buffer[i], 48))
+            {
+                memcpy(&ReceivedPacketVision, &newVision_Buffer[i], sizeof(ReceivedPacketVision_s));
+                vision_check = 1;
+            }
+            else if (Verify_CRC16_Check_Sum(&newVision_Buffer[i], sizeof(ReceivedPacketTwist_s)))
+            {
+                memcpy(&ReceivedPacketTwist, &newVision_Buffer[i], sizeof(ReceivedPacketTwist_s));
+            }
+
+
             break;
         }
     }
@@ -122,7 +135,7 @@ void vision_new_version(void)
 
     st.k = KK;
     st.bullet_type = BULLET_17;
-    st.current_v = 18.0f;
+    st.current_v = 17.5f;
     st.current_pitch = 0;
     st.current_yaw = 0;
     st.xw = ReceivedPacketVision.x;
@@ -149,9 +162,16 @@ void vision_new_version(void)
 
     float angle2, a2;
     //弹道解算
-    angle2 = acos(ReceivedPacketVision.x / (sqrt(ReceivedPacketVision.x * ReceivedPacketVision.x + h * h)));
-    a2 = (h * st.current_v * st.current_v + GRAVITY * ReceivedPacketVision.x * ReceivedPacketVision.x) / (st.current_v * st.current_v);
-    fan = a2 / (sqrt(ReceivedPacketVision.x * ReceivedPacketVision.x + h * h));
+    cacre = ReceivedPacketVision.y;
+    if (ReceivedPacketVision.x > ReceivedPacketVision.y)
+    {
+        cacre = ReceivedPacketVision.x;
+    }
+    cacre = fabs(cacre);
+
+    angle2 = acos(cacre / (sqrt(cacre * cacre + h * h)));
+    a2 = (h * st.current_v * st.current_v + GRAVITY * cacre * cacre) / (st.current_v * st.current_v);
+    fan = a2 / (sqrt(cacre * cacre + h * h));
     if (fan >= 1) fan = 0.9999;
     else	if (fan <= -1) fan = -0.9999;
     else fan = fan;
@@ -160,7 +180,7 @@ void vision_new_version(void)
     // s = sqrt((aim_x) * (aim_x) + (aim_y) * (aim_y)) - st.s_bias;
     // t = (float)(s / (st.current_v * acosf(atan2f(st.current_v, s))));
     // t = (float)((exp(KK * s) - 1.0f) / (KK * v * acosf(angle)));
-    
+
 
     //系统延时
 
@@ -216,6 +236,7 @@ void Vision_Send_Data2(uint16_t Byte)
 uint8_t usb_tx_buf[APP_TX_DATA_SIZE];
 void usb_send_vision(void)
 {
+    // static uint8_t i=0;
     uint8_t crc_ok = Verify_CRC16_Check_Sum((uint8_t *)(&ReceivedPacketVision), sizeof(ReceivedPacketVision));
     SendPacketVision.header = SET_OUTPUT_VISION_HEDER; // ??? crc_ok
     if (crc_ok)
@@ -234,6 +255,36 @@ void usb_send_vision(void)
     memcpy(usb_tx_buf, &SendPacketVision, sizeof(SendPacketVision_s));
     Append_CRC16_Check_Sum(usb_tx_buf, 28);
     Serial_SendArray(usb_tx_buf, sizeof(usb_tx_buf));
+    // if (i++ % 10 == 0)
+    // {
+    //     SendPacketRobotStatus.robot_id = robot_status.robot_id;
+    //     SendPacketRobotStatus.current_hp = robot_status.current_HP;
+    //     SendPacketRobotStatus.shooter1_heat = get_17Heat_1_Now();
+    //     SendPacketRobotStatus.shooter2_heat = get_17Heat_2_Now();
+    //     SendPacketRobotStatus.team_color = robot_status.robot_id < 99 ? 0 : 1;
+    //     SendPacketRobotStatus.is_attacked = last_HP - robot_status.current_HP > 0 ? 1 : 0;
+    //     memcpy(send_cacre, &SendPacketVision, sizeof(SendPacketRobotStatus_s));
+    //     Append_CRC16_Check_Sum(send_cacre, sizeof(SendPacketRobotStatus_s));
+    //     Serial_SendArray(send_cacre, sizeof(SendPacketRobotStatus_s));
+    //     memset(send_cacre, 0, sizeof(send_cacre));
+    // }
+    // if (i >= 100)
+    // {
+
+    //     memcpy(&SendPacketAllRobotHP.red_1_robot_hp, &robot_status, sizeof(robot_status));
+    //     memcpy(send_cacre, &SendPacketAllRobotHP, sizeof(SendPacketAllRobotHP_s));
+    //     Append_CRC16_Check_Sum(send_cacre, sizeof(SendPacketAllRobotHP_s));
+    //     Serial_SendArray(send_cacre, sizeof(SendPacketAllRobotHP_s));
+    //     memset(send_cacre, 0, sizeof(send_cacre));
+
+    //     SendPacketGameStatus.game_progress = game_status.game_progress;
+    //     SendPacketGameStatus.stage_remain_time = game_status.stage_remain_time;
+    //     memcpy(send_cacre, &SendPacketGameStatus, sizeof(SendPacketGameStatus_s));
+    //     Append_CRC16_Check_Sum(send_cacre, sizeof(SendPacketGameStatus_s));
+    //     Serial_SendArray(send_cacre, sizeof(SendPacketGameStatus_s));
+    //     memset(send_cacre, 0, sizeof(send_cacre));
+    //     i = 0;
+    // }
 }
 
 

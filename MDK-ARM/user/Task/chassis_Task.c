@@ -42,7 +42,7 @@ void chassis_Task(void const *argument)
     {
         if (power_heat_data.buffer_energy > 20)
         {
-            power_limit = 0.9f + power_Limit_count * power_heat_data.buffer_energy;
+            power_limit = 0.6f + power_Limit_count * power_heat_data.buffer_energy;
         }
         else if (power_heat_data.buffer_energy <= 20)
         {

@@ -148,11 +148,13 @@ int main(void)
   HAL_UART_Receive_DMA(&huart6, Com4_Vision_Buffer, VISION_BUFFER_LENGTH);
   __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 600);
   __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 600);
-
+  CANx_SendStdData(&hcan1, 0x206, Data_Failure, 8);
+  HAL_Delay(100);
   mpu_device_init();
+
   init_quaternion();
   //	ist8310_init();
-  CANx_SendStdData(&hcan1, 0x206, Data_Failure, 8);
+
   // CANx_SendStdData(&hcan1, 0x206, Data_Save_zero, 8);
   HAL_UART_Receive_DMA(&huart8, judgment_System_Signal_Buffer, JUDGEMENT_SIZE);
   HAL_Delay(5000);
@@ -179,7 +181,7 @@ int main(void)
     communication_Read_Data(judgment_System_handle_buffer);
     HAL_Delay(1);
   }
-  can5FIFO_flag = 0;
+  can5FIFO_flag = 1;
   CANx_SendStdData(&hcan1, 0x206, Data_Enable, 8);
   HAL_Delay(1);
   i = 0;

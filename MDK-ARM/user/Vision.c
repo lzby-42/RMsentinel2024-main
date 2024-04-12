@@ -6,6 +6,7 @@
 #include "stdio.h"
 #include "tool.h"
 #include "string.h"
+#include "config.h"
 uint8_t  Com4_Vision_Buffer[VISION_BUFFER_LENGTH] = { 0 };
 uint8_t  Vision_Buffer[VISION_BUFFER_LENGTH] = { 0 };
 uint8_t  Vision_Buffer_Flag = 0;
@@ -85,6 +86,81 @@ void vinion_old_Version(void)
 	{
 		visioning_flag_shoot = 0;
 	}
+
+}
+uint16_t count_T = 0;
+void auto_Aim(void)
+{
+	fp32 cacred = 0.3f;
+	count_T++;
+	switch (2)
+	{
+	case 1:
+		if (count_T > 0 && count_T < 1000)
+		{
+			cacred = 0.0f;
+		}
+		if (count_T > 1000 && count_T < 2000)
+		{
+			cacred = 120.0f / 180.0f * Pi;
+		}
+		if (count_T > 2000 && count_T < 3000)
+		{
+			cacred = 240.0f / 180.0f * Pi;
+		}
+		if (count_T > 3000 && count_T < 4000)
+		{
+			count_T = 0;
+		}
+		count_T++;
+		yaw_angle = cacred;
+		break;
+
+	case 2:
+		// if (count_T++ > 500)
+		// {
+		yaw_angle += 0.01745;
+		count_T = 0;
+		if (yaw_angle > 2 * Pi)
+		{
+			yaw_angle -= 2*Pi;
+		}
+
+		// }
+		break;
+	case 3:
+		// if (yaw_angle < Pi/2)
+		// {
+		// 	cacred = 0.034906585f;
+		// }
+		// if (yaw_angle > Pi + Pi/2)
+		// {
+		// 	cacred = -0.034906585f;
+		// }
+		// yaw_angle += cacred;
+		// if (count_T < 1000)
+		// {
+		// 	yaw_angle = Pi / 2;
+		// }
+		// else if (1000 < count_T && count_T < 2000)
+		// {
+		// 	yaw_angle = -Pi / 2;
+		// }else if (2000 < count_T<)
+		// {
+		// 	/* code */
+		// }
+
+
+
+		break;
+
+	default:
+		break;
+	}
+
+
+
+
 
 }
 // int outd;

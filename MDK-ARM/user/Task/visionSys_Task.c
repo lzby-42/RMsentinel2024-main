@@ -17,22 +17,31 @@
 #include "Vision.h"
 #include "newVision.h"
 #include "usart.h"
-#include "newVision.h"
 #include "bsp_imu.h"
 #include "tool.h"
+#include "judgeSys.h"
+#include "math.h"
 
 extern float yaw_angle, pit_angle;
 extern float yaw_angle_now, pit_angle_now;
+extern volatile uint8_t shoot_flag;
 
 float cacred = 0.0f;
 float look_angle = 0.0f;
+uint16_t last_HP = 0;
+uint8_t send_cacre[100] = { 0 };
+uint16_t wating = 0;//暂时丢失计时
+float target = 0;
 void visionSys_Task(void const *argument)
 {
-    // uint16_t i = 0;
+
     TickType_t xLastWakeTime;
     xLastWakeTime = xTaskGetTickCount();
     osDelay(100);
-
+    SendPacketRobotStatus.header = 0xA5;
+    SendPacketAllRobotHP.header = 0xA5;
+    SendPacketGameStatus.header = 0xA5;
+    last_HP = robot_status.current_HP;
     for (;;)
     {
 
@@ -50,22 +59,33 @@ void visionSys_Task(void const *argument)
                 pit_angle = 6150 - (b_set_angle * 8191 / PI / 2.0f);
                 yaw_angle = yaw2 + PI + 0.05f;
 
-                if (__fabs(yaw_angle - yaw_angle_now) > 1.0f && visioning_flag == 1)
+                if (visioning_flag == 1)
                 {
-                    visioning_flag_shoot == 1;
+                    visioning_flag_shoot = 1;
                 }
                 else
                 {
-                    visioning_flag_shoot == 0;
+                    visioning_flag_shoot = 0;
                 }
-
+                wating = 0;
             }
             else
             {
                 if (visioning_flag == 1)
                 {
-                    pit_angle = 6150;
+                    wating++;
+                    if (wating >= 500)
+                    {
+                        pit_angle = 6200+;
+                        wating = 500;
+                        auto_Aim();
+
+                    }
+
+
                 }
+                // auto_Aim();
+                visioning_flag_shoot = 0;
 
 
 
@@ -78,6 +98,8 @@ void visionSys_Task(void const *argument)
                 visioning_flag = 0;
                 time_count = 10;
             }
+
+
 
 
 

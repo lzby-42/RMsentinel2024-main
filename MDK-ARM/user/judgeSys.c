@@ -51,8 +51,11 @@ void communication_Read_Data(uint8_t *data)
 				case 0x0001://判断id是不是0x0001(游戏状态)
 					memcpy(&game_status, &data[7 + i], frame_header_rx.data_length);
 					break;
+
 				case 0x0003://判断id是不是0x0003(全局血量信号)
 					memcpy(&game_robot_HP, &data[7 + i], frame_header_rx.data_length);
+					break;
+					
 				default:
 					break;
 				}

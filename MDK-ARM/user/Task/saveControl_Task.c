@@ -13,7 +13,8 @@
 #include "judgeSys.h"
 #include "tool.h"
 #include "pid.h"
-#define conturl 1 
+#include "config.h"
+
 //任务ID
 extern osThreadId gimbalHandle;
 extern osThreadId chassisHandle;
@@ -128,7 +129,8 @@ void saveControl_Task(void const *argument)
 
 
         //遥控器紧急断电
-        if (busTime > 50 && conturl)
+
+        if (conturl == 1 && busTime > 50)
         {
 
             vTaskSuspend(chassisHandle);
@@ -165,16 +167,16 @@ void saveControl_Task(void const *argument)
                 can5FIFO_flag = 1;
                 HAL_Delay(1);
             }
-            CANx_SendStdData(&hcan1, 0x206, Data_Enable, 8);
-            vTaskResume(chassisHandle);
-            vTaskDelay(1);
-            vTaskResume(gimbalHandle);
-            vTaskDelay(1);
-            vTaskResume(visionSysHandle);
-            vTaskDelay(1);
-            vTaskResume(Moto_Shoot1Handle);
-            vTaskDelay(1);
-            vTaskResume(Moto_Shoot2Handle);
+            // CANx_SendStdData(&hcan1, 0x206, Data_Enable, 8);
+            // vTaskResume(chassisHandle);
+            // vTaskDelay(1);
+            // vTaskResume(gimbalHandle);
+            // vTaskDelay(1);
+            // vTaskResume(visionSysHandle);
+            // vTaskDelay(1);
+            // vTaskResume(Moto_Shoot1Handle);
+            // vTaskDelay(1);
+            // vTaskResume(Moto_Shoot2Handle);
             busTime = 50;
         }
         busTime++;
@@ -230,3 +232,6 @@ void saferStart(void const *argument)
 
     // osTimerStart(saferHandle, 10);
 }
+
+//#include <stdio.h>
+

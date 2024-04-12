@@ -58,6 +58,60 @@ typedef struct
 }
 VisionSendData_t;
 
+typedef struct
+{
+    uint8_t header;
+    float linear_x;
+    float linear_y;
+    float linear_z;
+    float angular_x;
+    float angular_y;
+    float angular_z;
+    uint16_t checksum;
+} __attribute__((packed)) ReceivedPacketTwist_s;
+
+typedef struct
+{
+    uint8_t header;
+    uint16_t red_1_robot_hp;
+    uint16_t red_2_robot_hp;
+    uint16_t red_3_robot_hp;
+    uint16_t red_4_robot_hp;
+    uint16_t red_5_robot_hp;
+    uint16_t red_7_robot_hp;
+    uint16_t red_outpost_hp;
+    uint16_t red_base_hp;
+    uint16_t blue_1_robot_hp;
+    uint16_t blue_2_robot_hp;
+    uint16_t blue_3_robot_hp;
+    uint16_t blue_4_robot_hp;
+    uint16_t blue_5_robot_hp;
+    uint16_t blue_7_robot_hp;
+    uint16_t blue_outpost_hp;
+    uint16_t blue_base_hp;
+    uint16_t checksum;
+} __attribute__((packed)) SendPacketAllRobotHP_s;
+
+typedef struct
+{
+    uint8_t header;
+    uint8_t game_progress;
+    uint16_t stage_remain_time;
+    uint16_t checksum;
+} __attribute__((packed)) SendPacketGameStatus_s;
+
+typedef struct
+{
+    uint8_t header;
+    uint8_t robot_id;
+    uint16_t current_hp;
+    uint16_t shooter1_heat;
+    uint16_t shooter2_heat;
+    bool team_color; // 0-red 1-blue
+    bool is_attacked;
+    uint16_t checksum;
+} __attribute__((packed)) SendPacketRobotStatus_s;
+
 void vision_new_version(void);
 //void Vision_Read_Data(uint8_t *ReadFromUsart);
 void Vision_Send_Data(uint16_t Byte);
@@ -67,6 +121,14 @@ uint8_t ask_To_0x(uint8_t ch);
 extern VisionRecvData_t      VisionRecvData;    //视觉接收结构体
 
 extern VisionSendData_t      VisionSendData;
+
+extern SendPacketAllRobotHP_s SendPacketAllRobotHP;
+
+extern SendPacketGameStatus_s SendPacketGameStatus;
+
+extern SendPacketRobotStatus_s SendPacketRobotStatus;
+
+extern ReceivedPacketTwist_s ReceivedPacketTwist;
 
 typedef struct pid_ctrl {
   float		target;

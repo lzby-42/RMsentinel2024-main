@@ -38,8 +38,8 @@ int8_t turn_flag_2 = 1;
 volatile uint8_t shoot_flag_1 = 0;
 volatile uint8_t shoot_flag_2 = 0;
 
-int target_v1 = 380;
-int target_v2 = 380;
+int target_v1 = 330;
+int target_v2 = 330;
 
 uint8_t count1 = 0;
 uint8_t count2 = 0;
@@ -56,7 +56,7 @@ void Moto_Shoot1_Task(void const *argument)
     {
         if ((val_2[4 + 8].rotor_speed < -6800 &&
             val_2[3 + 8].rotor_speed > 6800 &&
-            (shoot_flag == 1 || (shoot_flag_1 ==1 && visioning_flag_shoot == 1))) ||
+            (shoot_flag == 1 || (visioning_flag_shoot == 1))) ||
             text1)
         {
             pid_Shoot1(target_v1, 25.0f, 1.0f, 1.0f);
@@ -95,7 +95,7 @@ void Moto_Shoot1_Task(void const *argument)
         }
         else
         {
-            bullet_v1=0;
+            bullet_v1 = 0;
             set_motor_voltage_can2_hig(0, turn_flag_2 * bullet_v2, 0, 0);
         }
         vTaskDelay(1);
@@ -116,7 +116,7 @@ void Moto_Shoot2_Task(void const *argument)
     {
         if ((val_2[1 + 8].rotor_speed < -6800 &&
             val_2[2 + 8].rotor_speed > 6800 &&
-            (shoot_flag == 1 || (shoot_flag_2 == 1 && visioning_flag_shoot == 1))) ||
+            (shoot_flag == 1 || (visioning_flag_shoot == 1))) ||
             text1)
         {
 
@@ -151,7 +151,8 @@ void Moto_Shoot2_Task(void const *argument)
                 target_v2 = 350;
             }
 
-        }else
+        }
+        else
         {
             bullet_v2 = 0;
             set_motor_voltage_can2_hig(turn_flag_1 * bullet_v1, 0, 0, 0);

@@ -13,5 +13,6 @@ extern uint8_t  Com4_Vision_Buffer[VISION_BUFFER_LENGTH];
 extern uint8_t  Vision_Buffer[VISION_BUFFER_LENGTH];
 void vision_read(void);
 void vinion_old_Version(void);
-void auto_Aim(float kpp, float kip, float kpy, float kiy, float kdp, float kdy);
+// void auto_Aim(float kpp, float kip, float kpy, float kiy, float kdp, float kdy);
+void auto_Aim(void);
 #endif
