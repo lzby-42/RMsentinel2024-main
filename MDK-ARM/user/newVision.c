@@ -135,7 +135,7 @@ void vision_new_version(void)
 
     st.k = KK;
     st.bullet_type = BULLET_17;
-    st.current_v = 17.5f;
+    st.current_v = 15.0f;
     st.current_pitch = 0;
     st.current_yaw = 0;
     st.xw = ReceivedPacketVision.x;
@@ -163,7 +163,7 @@ void vision_new_version(void)
     float angle2, a2;
     //弹道解算
     cacre = ReceivedPacketVision.y;
-    if (ReceivedPacketVision.x > ReceivedPacketVision.y)
+    if (fabs(ReceivedPacketVision.x) > fabs(ReceivedPacketVision.y))
     {
         cacre = ReceivedPacketVision.x;
     }
@@ -173,7 +173,7 @@ void vision_new_version(void)
     a2 = (h * st.current_v * st.current_v + GRAVITY * cacre * cacre) / (st.current_v * st.current_v);
     fan = a2 / (sqrt(cacre * cacre + h * h));
     if (fan >= 1) fan = 0.9999;
-    else	if (fan <= -1) fan = -0.9999;
+    else    if (fan <= -1) fan = -0.9999;
     else fan = fan;
     b_set_angle = (asin(fan) - angle2) * 0.5;
     yaw2 = atan2f(aim_y, aim_x);

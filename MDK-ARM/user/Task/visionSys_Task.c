@@ -32,6 +32,7 @@ uint16_t last_HP = 0;
 uint8_t send_cacre[100] = { 0 };
 uint16_t wating = 0;//暂时丢失计时
 float target = 0;
+uint16_t wave = 0;
 void visionSys_Task(void const *argument)
 {
 
@@ -56,8 +57,8 @@ void visionSys_Task(void const *argument)
             vision_new_version();
             if (ReceivedPacketVision.tracking == true)
             {
-                pit_angle = 6150 - (b_set_angle * 8191 / PI / 2.0f);
-                yaw_angle = yaw2 + PI + 0.05f;
+                pit_angle = 6150 - (b_set_angle * 8191 / PI / 3.0f);
+                yaw_angle = yaw2 + PI;
 
                 if (visioning_flag == 1)
                 {
@@ -76,9 +77,14 @@ void visionSys_Task(void const *argument)
                     wating++;
                     if (wating >= 500)
                     {
-                        pit_angle = 6200+;
+                        pit_angle = 6200 + 100 * sinf(0.001 * wave++);
                         wating = 500;
-                        auto_Aim();
+                        // auto_Aim();
+                        if (wave * 0.001 > 4 * PI)
+                        {
+                            wave = 0;
+                        }
+
 
                     }
 

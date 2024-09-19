@@ -19,12 +19,12 @@
 #include "usart.h"
 #include "judgeSys.h"
 
-ext_student_interactive_header_data_t custom_grapic_draw;			//自定义图像绘制
-ext_client_custom_graphic_t custom_graphic;	//自定义图像
+ext_student_interactive_header_data_t custom_grapic_draw; // 自定义图像绘制
+ext_client_custom_graphic_t custom_graphic;               // 自定义图像
 
 void judgeSys_Task(void const *argument)
 {
-    uint8_t i = 0;//记数标定十hz
+    uint8_t i = 0; // 记数标定十hz
 
     TickType_t xLastWakeTime;
     xLastWakeTime = xTaskGetTickCount();
@@ -33,7 +33,7 @@ void judgeSys_Task(void const *argument)
 
     // custom_grapic_draw.sender_ID = UI_Data_RobotID_BStandard3;//发送者ID，机器人对应ID，此处为蓝方英雄
     // custom_grapic_draw.receiver_ID = UI_Data_CilentID_BStandard3;//接收者ID，操作手客户端ID
-    //自定义图像数据
+    // 自定义图像数据
 
     // custom_grapic_draw.graphic_custom.grapic_data_struct[0].graphic_name[0] = '1';
     // custom_grapic_draw.graphic_custom.grapic_data_struct[0].graphic_name[1] = '0';
@@ -51,18 +51,14 @@ void judgeSys_Task(void const *argument)
     // custom_grapic_draw.graphic_custom.grapic_data_struct[0].end_x = 980;
     // custom_grapic_draw.graphic_custom.grapic_data_struct[0].end_y = 240;
     // custom_grapic_draw.graphic_custom.grapic_data_struct[0].radius = 0;
-    
-
-
 
     judgment_Protect = 0;
     HAL_UART_Receive_DMA(&huart8, judgment_System_Signal_Buffer, JUDGEMENT_SIZE);
     while (1)
     {
 
-            communication_Read_Data(judgment_System_handle_buffer);
-            judgment_Protect = 0;
-        
+        communication_Read_Data(judgment_System_handle_buffer);
+        judgment_Protect = 0;
 
         // if (i >= 10)
         // {
@@ -71,6 +67,8 @@ void judgeSys_Task(void const *argument)
 
         // }
         // i++;
+
+        
 
         vTaskDelayUntil(&xLastWakeTime, 5);
     }

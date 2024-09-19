@@ -88,7 +88,7 @@ void MX_FREERTOS_Init(void);
   * @retval int
   */
 int main(void)
-{
+   {
   /* USER CODE BEGIN 1 */
   uint16_t i;
   /* USER CODE END 1 */
@@ -151,7 +151,7 @@ int main(void)
   CANx_SendStdData(&hcan1, 0x206, Data_Failure, 8);
   HAL_Delay(100);
   mpu_device_init();
-
+  can5FIFO_flag = 1;
   init_quaternion();
   //	ist8310_init();
 
@@ -181,11 +181,12 @@ int main(void)
     communication_Read_Data(judgment_System_handle_buffer);
     HAL_Delay(1);
   }
-  can5FIFO_flag = 1;
+  
   CANx_SendStdData(&hcan1, 0x206, Data_Enable, 8);
   HAL_Delay(1);
   i = 0;
-  while (can5FIFO_flag == 1 || robot_status.robot_id == 0)
+    // while (can5FIFO_flag == 1 || robot_status.robot_id == 0)
+  while (can5FIFO_flag == 1)
   {
     if (i++ > 100)
     {

@@ -3,7 +3,6 @@
   "type": "ARM",
   "dependenceList": [],
   "srcDirs": [
-    ".eide/deps",
     "MDK-ARM/user/Task",
     "MDK-ARM/user"
   ],
@@ -283,56 +282,16 @@
       "compileConfig": {
         "cpuType": "Cortex-M4",
         "floatingPointHardware": "single",
-        "scatterFilePath": "",
         "useCustomScatterFile": false,
+        "scatterFilePath": "<YOUR_SCATTER_FILE>.sct",
         "storageLayout": {
           "RAM": [
-            {
-              "tag": "RAM",
-              "id": 1,
-              "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
-              },
-              "isChecked": false,
-              "noInit": false
-            },
-            {
-              "tag": "RAM",
-              "id": 2,
-              "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
-              },
-              "isChecked": false,
-              "noInit": false
-            },
-            {
-              "tag": "RAM",
-              "id": 3,
-              "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
-              },
-              "isChecked": false,
-              "noInit": false
-            },
             {
               "tag": "IRAM",
               "id": 1,
               "mem": {
                 "startAddr": "0x20000000",
-                "size": "0x30000"
-              },
-              "isChecked": true,
-              "noInit": false
-            },
-            {
-              "tag": "IRAM",
-              "id": 2,
-              "mem": {
-                "startAddr": "0x10000000",
-                "size": "0x10000"
+                "size": "0x50000"
               },
               "isChecked": true,
               "noInit": false
@@ -340,54 +299,14 @@
           ],
           "ROM": [
             {
-              "tag": "ROM",
-              "id": 1,
-              "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
-              },
-              "isChecked": false,
-              "isStartup": false
-            },
-            {
-              "tag": "ROM",
-              "id": 2,
-              "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
-              },
-              "isChecked": false,
-              "isStartup": false
-            },
-            {
-              "tag": "ROM",
-              "id": 3,
-              "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
-              },
-              "isChecked": false,
-              "isStartup": false
-            },
-            {
               "tag": "IROM",
               "id": 1,
               "mem": {
-                "startAddr": "0x8000000",
-                "size": "0x200000"
+                "startAddr": "0x08000000",
+                "size": "0x100000"
               },
               "isChecked": true,
               "isStartup": true
-            },
-            {
-              "tag": "IROM",
-              "id": 2,
-              "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
-              },
-              "isChecked": false,
-              "isStartup": false
             }
           ]
         },
@@ -416,6 +335,7 @@
       "custom_dep": {
         "name": "default",
         "incList": [
+          ".",
           "Core/Inc",
           "Drivers/STM32F4xx_HAL_Driver/Inc",
           "Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
@@ -428,17 +348,63 @@
           "MDK-ARM/boards",
           "MDK-ARM/bsp",
           ".cmsis/include",
-          "MDK-ARM/RTE/_remoter_can",
-          ".eide/deps"
+          "MDK-ARM/RTE/_remoter_can"
         ],
         "libList": [],
-        "sourceDirList": [],
         "defineList": [
           "USE_HAL_DRIVER",
           "STM32F427xx"
         ]
+      },
+      "builderOptions": {
+        "AC5": {
+          "version": 4,
+          "beforeBuildTasks": [],
+          "afterBuildTasks": [],
+          "global": {
+            "output-debug-info": "enable",
+            "use-microLIB": true
+          },
+          "c/cpp-compiler": {
+            "optimization": "level-3",
+            "one-elf-section-per-function": true,
+            "C_FLAGS": "--diag_suppress=1 --diag_suppress=1295",
+            "CXX_FLAGS": "--diag_suppress=1 --diag_suppress=1295",
+            "warnings": "all-warnings",
+            "gnu-extensions": true,
+            "c99-mode": true
+          },
+          "asm-compiler": {},
+          "linker": {
+            "output-format": "elf",
+            "ro-base": "0x08000000",
+            "rw-base": "0x20000000"
+          }
+        },
+        "AC6": {
+          "version": 3,
+          "beforeBuildTasks": [],
+          "afterBuildTasks": [],
+          "global": {
+            "use-microLIB": true,
+            "output-debug-info": "enable"
+          },
+          "c/cpp-compiler": {
+            "optimization": "level-0",
+            "language-c": "c99",
+            "language-cpp": "c++11",
+            "link-time-optimization": false
+          },
+          "asm-compiler": {
+            "$use": "asm-auto"
+          },
+          "linker": {
+            "output-format": "elf",
+            "misc-controls": "--diag_suppress=L6329"
+          }
+        }
       }
     }
   },
-  "version": "3.3"
+  "version": "3.5"
 }

@@ -1,11 +1,11 @@
 /*
-Õâ¸öÎÄ¼þ¿¿ÒÆÖ²´úÂë
-»¹²îµã¶«Î÷    HAL_NVIC_SetPriority(USART1_IRQn, 1, 1);
-			  HAL_NVIC_EnableIRQ(USART1_IRQn);      ÕâÁ½¾ä¼ÓÔÚ MX_USART1_UART_Init ´®¿Ú³õÊ¼»¯Àï±ß
+è¿™ä¸ªæ–‡ä»¶é ç§»æ¤ä»£ç 
+è¿˜å·®ç‚¹ä¸œè¥¿    HAL_NVIC_SetPriority(USART1_IRQn, 1, 1);
+			  HAL_NVIC_EnableIRQ(USART1_IRQn);      è¿™ä¸¤å¥åŠ åœ¨ MX_USART1_UART_Init ä¸²å£åˆå§‹åŒ–é‡Œè¾¹
 
-			  uart_receive_handler(&huart1);        Õâ¾ä¼ÓÔÚusartÖÐ¶ÏÀï±ß
+			  uart_receive_handler(&huart1);        è¿™å¥åŠ åœ¨usartä¸­æ–­é‡Œè¾¹
 
-			  dbus_uart_init                        Õâ¾ä¼ÓÔÚmainÀï±ß
+			  dbus_uart_init                        è¿™å¥åŠ åœ¨mainé‡Œè¾¹
 
 */
 #include "string.h"
@@ -70,7 +70,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buff)
 	rc->sw1 = ((buff[5] >> 4) & 0x000C) >> 2;
 	rc->sw2 = (buff[5] >> 4) & 0x0003;
 	rc->ch5 = (buff[16] | buff[17] << 8) & 0x07FF;
-	//rc.bolun.b = ((int16_t)buff[16] | ((int16_t)buff[17] << 8)) & 0x07FF;  //²¦ÂÖ
+	//rc.bolun.b = ((int16_t)buff[16] | ((int16_t)buff[17] << 8)) & 0x07FF;  //æ‹¨è½®
 
 	motorval1 = abs(rc->ch1) > 10 ? rc->ch1 : 0;
 	motorval2 = abs(rc->ch2) > 10 ? rc->ch2 : 0;

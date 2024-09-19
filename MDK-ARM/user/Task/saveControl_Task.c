@@ -43,67 +43,67 @@ void saveControl_Task(void const *argument)
     {
 
 
-        if (count++ > 10)
-        {
-            //底盘断电判定
-            if (robot_status.power_management_chassis_output == 0)
-            {
-                if (eTaskGetState(chassisHandle) != eSuspended)
-                {
-                    vTaskSuspend(chassisHandle);
-                    memset(&val_2[0], 0, sizeof(moto_info_t) * 4);
-                    ue1 = 0;
-                    ue2 = 0;
-                    ue3 = 0;
-                    ue4 = 0;
-                }
-                pid_chassis(50, 0.048f, 0.046f, 0, 0);
+        // if (count++ > 10)
+        // {
+        //     //底盘断电判定
+        //     if (robot_status.power_management_chassis_output == 0)
+        //     {
+        //         if (eTaskGetState(chassisHandle) != eSuspended)
+        //         {
+        //             vTaskSuspend(chassisHandle);
+        //             memset(&val_2[0], 0, sizeof(moto_info_t) * 4);
+        //             ue1 = 0;
+        //             ue2 = 0;
+        //             ue3 = 0;
+        //             ue4 = 0;
+        //         }
+        //         pid_chassis(50, 0.048f, 0.046f, 0, 0);
 
-            }
-            else if (robot_status.power_management_chassis_output == 1 && eTaskGetState(chassisHandle) == eSuspended)
-            {
-                vTaskResume(chassisHandle);
-            }
+        //     }
+        //     else if (robot_status.power_management_chassis_output == 1 && eTaskGetState(chassisHandle) == eSuspended)
+        //     {
+        //         vTaskResume(chassisHandle);
+        //     }
 
-            //云台断电判定
-            if (robot_status.power_management_gimbal_output == 0)
-            {
-                if (eTaskGetState(gimbalHandle) != eSuspended)
-                {
-                    vTaskSuspend(gimbalHandle);
+        //     //云台断电判定
+        //     if (robot_status.power_management_gimbal_output == 0)
+        //     {
+        //         if (eTaskGetState(gimbalHandle) != eSuspended)
+        //         {
+        //             vTaskSuspend(gimbalHandle);
+        //             vTaskSuspend(visionSysHandle);
+        //             yaw_angle_pid.out = 0;
+        //             pit_angle_pid.out = 0;
+        //             yaw_angle_pid.Pout = 0;
+        //             pit_angle_pid.Pout = 0;
+        //             yaw_angle_pid.Iout = 0;
+        //             pit_angle_pid.Iout = 0;
+        //             yaw_angle_pid.Dout = 0;
+        //             pit_angle_pid.Dout = 0;
+        //             memset(&yaw_angle_pid.Dbuf, 0, 3);
+        //             memset(&pit_angle_pid.Dbuf, 0, 3);
+        //             memset(&yaw_angle_pid.error, 0, 3);
+        //             memset(&pit_angle_pid.error, 0, 3);
+        //             can5FIFO_flag = 1;
+        //         }
+        //         yaw_angle = (-imu.yaw + 180) * (float)Pi / 180.0f;
+        //         pit_angle = 6300;
+        //     }
+        //     else if (robot_status.power_management_gimbal_output == 1 && eTaskGetState(gimbalHandle) == eSuspended)
+        //     {
+        //         if (can5FIFO_flag == 1)
+        //         {
+        //             CANx_SendStdData(&hcan1, 0x206, Data_Enable, 8);
+        //         }
+        //         else
+        //         {
+        //             vTaskResume(gimbalHandle);
+        //             vTaskResume(visionSysHandle);
+        //         }
 
-                    yaw_angle_pid.out = 0;
-                    pit_angle_pid.out = 0;
-                    yaw_angle_pid.Pout = 0;
-                    pit_angle_pid.Pout = 0;
-                    yaw_angle_pid.Iout = 0;
-                    pit_angle_pid.Iout = 0;
-                    yaw_angle_pid.Dout = 0;
-                    pit_angle_pid.Dout = 0;
-                    memset(&yaw_angle_pid.Dbuf, 0, 3);
-                    memset(&pit_angle_pid.Dbuf, 0, 3);
-                    memset(&yaw_angle_pid.error, 0, 3);
-                    memset(&pit_angle_pid.error, 0, 3);
-                    can5FIFO_flag = 1;
-                }
-                yaw_angle = (-imu.yaw + 180) * (float)Pi / 180.0f;
-                pit_angle = 6300;
-            }
-            else if (robot_status.power_management_gimbal_output == 1 && eTaskGetState(gimbalHandle) == eSuspended)
-            {
-                if (can5FIFO_flag == 1)
-                {
-                    CANx_SendStdData(&hcan1, 0x206, Data_Enable, 8);
-                }
-                else
-                {
-                    vTaskResume(gimbalHandle);
-
-                }
-
-            }
-            count = 0;
-        }
+        //     }
+        //     count = 0;
+        // }
 
         //射击限制判定
         if (count == 5)

@@ -6,7 +6,6 @@
 */
 /********************************/
 
-
 #include "main.h"
 #include "pid.h"
 #include "remoter.h"
@@ -22,25 +21,24 @@ extern rc_info_t rc;
 int timea, tb;
 uint32_t wait;
 // extern int val_1cs1, val_1cs2, val_1cs3, val_1cs4, val_1cs7speed;         //实际转速
-extern int motorval1, motorval2, motorval3, motorval4, motorvalleft;     //遥控器给定目标转速
-int limit = 6500;                                         //限制电机的输出值（比例限幅）
-int limitcyval = 9450;           							//限制的累加值（应为电机转速最大值积分限幅）
-//float kpcs,kics;  比例积分的测试值
-float s1, s2, s3, s4;										//电机实际转速与遥控器的发送值对应
-float le1, le2, le3, le4;									//上次误差
-float e1, e2, e3, e4;										//本次误差
-float de1, de2, de3, de4;									//kd乘的误差差值
-float ue1, ue2, ue3, ue4;									//ki乘的误差累计值
-int sval1, sval2, sval3, sval4;							//各个电机的目标输出值
-float setmv1;											//左右旋转的目标值
-float out1, out2, out3, out4;						//电机输出值
-int bullet_v1 = 0;//弹丸射速
+extern int motorval1, motorval2, motorval3, motorval4, motorvalleft; // 遥控器给定目标转速
+int limit = 6500;													 // 限制电机的输出值（比例限幅）
+int limitcyval = 9450;												 // 限制的累加值（应为电机转速最大值积分限幅）
+// float kpcs,kics;  比例积分的测试值
+float s1, s2, s3, s4;			// 电机实际转速与遥控器的发送值对应
+float le1, le2, le3, le4;		// 上次误差
+float e1, e2, e3, e4;			// 本次误差
+float de1, de2, de3, de4;		// kd乘的误差差值
+float ue1, ue2, ue3, ue4;		// ki乘的误差累计值
+int sval1, sval2, sval3, sval4; // 各个电机的目标输出值
+float setmv1;					// 左右旋转的目标值
+float out1, out2, out3, out4;	// 电机输出值
+int bullet_v1 = 0;				// 弹丸射速
 int bullet_v2 = 0;
 extern int bolun;
 
-
-extern imu_t   imu;
-#define val  (Pi/180)
+extern imu_t imu;
+#define val (Pi / 180)
 float sety, setx;
 double seita;
 float xcos, ysin;
@@ -51,16 +49,15 @@ int speedcs;
 float errorwucha1;
 float errorwucha2;
 
-void pid_chassis(float kp, float ki, float kd, float setmv4, float setmv3)	//float setmv4（y轴值）,float setmv3（x轴值）
+void pid_chassis(float kp, float ki, float kd, float setmv4, float setmv3) // float setmv4（y轴值）,float setmv3（x轴值）
 {
 	static float wSpeed = 0;
 	static uint8_t t = 0;
-	seita = (((val_2[7].rotor_angle) % 16471) / 2621.4411123) + Pi / 2;//计算yaw_angle
+	seita = (((val_2[7].rotor_angle) % 16471) / 2621.4411123) + Pi / 2; // 计算yaw_angle
 	xcos = cos(-seita);
 	ysin = sin(-seita);
 	setx = (-setmv3 * xcos) - (-setmv4 * ysin);
 	sety = (-setmv3 * ysin) + (-setmv4 * xcos);
-
 
 	// setmv1 = (abs(motorval1) > 100 ? motorval1 : 0) / 3.30f;
 	if (motorvalleft == 1)
@@ -75,68 +72,63 @@ void pid_chassis(float kp, float ki, float kd, float setmv4, float setmv3)	//flo
 		{
 			wSpeed = 0;
 		}
-
 	}
 	if (motorvalleft == 3)
 	{
 		wSpeed += 0.1 * sin(0.05 * t++);
-		LimitMax(wSpeed, 180);
+		LimitMax(wSpeed, 240);
 	}
 	if (0.05 * t >= 4 * Pi)
 	{
 		t = 0;
 	}
 
-
-
-
-	setmv1 = wSpeed;//60->90°/s
+	setmv1 = wSpeed; // 60->90°/s
 	s1 = val_2[1].rotor_speed / 14.28;
 	s2 = val_2[2].rotor_speed / 14.28;
 	s3 = val_2[3].rotor_speed / 14.28;
 	s4 = val_2[4].rotor_speed / 14.28;
-	sval1 = (sety + setx + setmv1);					//当加上云台后y'=y*cos-x*sin   x'=y*sin+x*cos
-	sval2 = (sety - setx + setmv1);						//云台的y-x对应遥控器的通道获取值4-y 3-x 
+	sval1 = (sety + setx + setmv1); // 当加上云台后y'=y*cos-x*sin   x'=y*sin+x*cos
+	sval2 = (sety - setx + setmv1); // 云台的y-x对应遥控器的通道获取值4-y 3-x
 	sval3 = -(sety + setx - setmv1);
-	sval4 = -(sety - setx - setmv1);     			//目标值（速度解算）setmv4对应y'  setmv3对应x'  setmv1对应w
+	sval4 = -(sety - setx - setmv1); // 目标值（速度解算）setmv4对应y'  setmv3对应x'  setmv1对应w
 	e1 = sval1 - s1;
 	e2 = sval2 - s2;
 	e3 = sval3 - s3;
-	e4 = sval4 - s4; 										//误差1	
+	e4 = sval4 - s4; // 误差1
 	de1 = e1 - le1;
 	de2 = e2 - le2;
 	de3 = e3 - le3;
-	de4 = e4 - le4;											//kd乘的误差差值
+	de4 = e4 - le4; // kd乘的误差差值
 	ue1 += e1;
 	ue2 += e2;
 	ue3 += e3;
 	ue4 += e4;
 
-	LimitMax(ue1, limitcyval);							//限制Ki误差值
+	LimitMax(ue1, limitcyval); // 限制Ki误差值
 	LimitMax(ue2, limitcyval);
 	LimitMax(ue3, limitcyval);
 	LimitMax(ue4, limitcyval);
-	//ki乘的误差累计值
+	// ki乘的误差累计值
 
 	out1 = (kp * e1 + ki * ue1 + kd * de1);
 	out2 = (kp * e2 + ki * ue2 + kd * de2);
 	out3 = (kp * e3 + ki * ue3 + kd * de3);
-	out4 = (kp * e4 + ki * 1 * ue4 + kd * de4);					//电机输出值
+	out4 = (kp * e4 + ki * 1 * ue4 + kd * de4); // 电机输出值
 	le1 = e1;
 	le2 = e2;
 	le3 = e3;
-	le4 = e4;												//上次误差
+	le4 = e4; // 上次误差
 
 	LimitMax(out1, limit);
 	LimitMax(out2, limit);
 	LimitMax(out3, limit);
-	LimitMax(out4, limit);									//限制电机输出值
+	LimitMax(out4, limit); // 限制电机输出值
 
-
-	//限制的累加值（应为电机转速最大值积分限幅）
+	// 限制的累加值（应为电机转速最大值积分限幅）
 }
 
-//void pid_out_val(float kp,float ki,float kd,float setmv4,float setmv3)	//float setmv4（y轴值）,float setmv3（x轴值）
+// void pid_out_val(float kp,float ki,float kd,float setmv4,float setmv3)	//float setmv4（y轴值）,float setmv3（x轴值）
 //{
 //	setmv1=-(bolun-1024)/2;
 //	s1=val_1cs1/14.28;
@@ -144,20 +136,20 @@ void pid_chassis(float kp, float ki, float kd, float setmv4, float setmv3)	//flo
 //	s3=val_1cs3/14.28;
 //	s4=val_1cs4/14.28;              					//实际值=电机实际转速与/14.28（转速最大值比上遥控器最大输出值）
 //	sval1=1.02f*(setmv4+setmv3+setmv1);					//当加上云台后y'=y*cos-x*sin   x'=y*sin+x*cos
-//	sval2=(setmv4-setmv3+setmv1);						//云台的y-x对应遥控器的通道获取值4-y 3-x 
+//	sval2=(setmv4-setmv3+setmv1);						//云台的y-x对应遥控器的通道获取值4-y 3-x
 //	sval3=-(setmv4+setmv3-setmv1);
 //	sval4=-1.1f*(setmv4-setmv3-setmv1);     			//目标值（速度解算）setmv4对应y'  setmv3对应x'  setmv1对应w
 //	e1=sval1-s1;
 //	e2=sval2-s2;
 //	e3=sval3-s3;
-//	e4=sval4-1.1f*s4; 										//误差1	
+//	e4=sval4-1.1f*s4; 										//误差1
 //	de1=e1-le1;
 //	de2=e2-le2;
 //	de3=e3-le3;
 //	de4=e4-le4;											//kd乘的误差差值
 //	ue1+=e1;
 //	ue2+=e2;
-//	ue3+=e3;											
+//	ue3+=e3;
 //	ue4+=e4;											//ki乘的误差累计值
 //	out1=(kp*e1+ki*ue1+kd*de1);
 //	out2=(kp*e2+ki*ue2+kd*de2);
@@ -179,7 +171,7 @@ void pid_chassis(float kp, float ki, float kd, float setmv4, float setmv3)	//flo
 //	if(out4<=-limit)out4=-limit;						//限制电机的输出值（比例限幅）
 //	if(ue1>=limitcyval)ue1=limitcyval;
 //	if(ue2>=limitcyval)ue2=limitcyval;
-//	if(ue3>=limitcyval)ue3=limitcyval; 
+//	if(ue3>=limitcyval)ue3=limitcyval;
 //	if(ue4>=limitcyval)ue4=limitcyval;
 //	if(ue1<=-limitcyval)ue1=-limitcyval;
 //	if(ue2<=-limitcyval)ue2=-limitcyval;
@@ -194,7 +186,6 @@ int pid_Shoot1(int sdbspeed, float kp, float ki, float kd)
 	int limit = 7000;
 	int jifenlimit = 1600;
 	speedcs = val_2[5 + 8].rotor_speed / 8;
-
 
 	errorwucha1 = (sdbspeed - speedcs);
 	LimitMax(errorwucha1, 50);
@@ -215,8 +206,7 @@ int pid_Shoot2(int sdbspeed, float kp, float ki, float kd)
 
 	int limit = 7000;
 	int jifenlimit = 1000;
-	speedcs = val_2[6 + 8].rotor_speed / 8;//我也不知道为什么是8，但是4就会振的很厉害，后辈有时间你们可以试试其他数
-
+	speedcs = val_2[6 + 8].rotor_speed / 8; // 我也不知道为什么是8，但是4就会振的很厉害，后辈有时间你们可以试试其他数
 
 	errorwucha2 = (sdbspeed - speedcs);
 
@@ -267,7 +257,7 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 	LimitMax(p->Output, p->max_out);
 	return p->Output;
 }
-//void zidong_ornot(void)
+// void zidong_ornot(void)
 //
 //
 //{
@@ -283,16 +273,16 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //		zuoqidong(500);
 //		zuoyi(1500);
 //		zuotingzhi(1000);
-//	
+//
 //		HAL_Delay(1);
 //
-//}
+// }
 //
-//void zuoqidong(__IO uint32_t ms)
+// void zuoqidong(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
 //	uint32_t wait1=ms;
-//	
+//
 //	if(wait1<HAL_MAX_DELAY)
 //	{
 //		wait1+= (uint32_t)(uwTickFreq);
@@ -306,10 +296,10 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 ////		can_output(-900,1500,1700,-1400);
 //	}
 //}
-//void youyi(__IO uint32_t ms)
+// void youyi(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
-//	wait=ms;	
+//	wait=ms;
 //	int i=50;
 //	if(wait<HAL_MAX_DELAY)
 //	{
@@ -322,10 +312,10 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //		if(i>=200)i=200;
 //		pid_out_val(50,0.048f,0.046f,0 ,i);
 //		can_output(out1,out2,out3,out4);
-//		
+//
 //	}
 //}
-//void zuoyi(__IO uint32_t ms)
+// void zuoyi(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
 //	uint32_t wait1=ms;
@@ -343,7 +333,7 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //		can_output(out1,out2,out3,out4);
 //	}
 //}
-//void youtingzhi(__IO uint32_t ms)
+// void youtingzhi(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
 //	uint32_t wait1=ms;
@@ -362,7 +352,7 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //	}
 //}
 //
-//void zuotingzhi(__IO uint32_t ms)
+// void zuotingzhi(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
 //	uint32_t wait1=ms;
@@ -380,7 +370,7 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //		can_output(out1,out2,out3,out4);
 //	}
 //}
-//void qianyi(__IO uint32_t ms)
+// void qianyi(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
 //	uint32_t wait1=ms;
@@ -398,7 +388,7 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //		can_output(out1,out2,out3,out4);
 //	}
 //}
-//void qianqidong(__IO uint32_t ms)
+// void qianqidong(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
 //	uint32_t wait1=ms;
@@ -414,7 +404,7 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //	}
 //}
 //
-//void qiantingzhi(__IO uint32_t ms)
+// void qiantingzhi(__IO uint32_t ms)
 //{
 //	uint32_t timea=HAL_GetTick();
 //	uint32_t wait1=ms;
@@ -436,12 +426,12 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 // int rmval;
 // extern int val_1cs2;
 //
-//int set_motor_out(void)
+// int set_motor_out(void)
 //{
-//	
+//
 //	if((motorval2<=110)&&(motorval2>=-110))
 //	{
-//			
+//
 //		rmval=(-val_1cs2)/14;
 //		if(rmval>420){rmval=420;}
 //		if(rmval<-420){rmval=-420;}
@@ -453,10 +443,3 @@ float pid2_Pos_clc(pid2_pos_t *p, float target, float now, float circule_num)
 //	return rmval;
 //}
 //*/
-
-
-
-
-
-
-
